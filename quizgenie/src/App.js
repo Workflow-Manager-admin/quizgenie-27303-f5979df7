@@ -67,9 +67,22 @@ function App() {
   // Generate quiz questions
   const handleGenerate = () => {
     const { numQuestions, difficulty } = quizSettings;
-    setQuestions(generateQuizQuestions(topic, numQuestions, difficulty));
+    if (!topic || topic.trim().length === 0) {
+      alert("Please enter a topic or text to generate quiz questions.");
+      return;
+    }
+    const newQuestions = generateQuizQuestions(topic, numQuestions, difficulty);
+    setQuestions(newQuestions);
     setShowPreview(true);
     setSharingUrl(null);
+
+    // Scroll to quiz preview after generation for clearer feedback
+    setTimeout(() => {
+      const quizPreviewElem = document.getElementById("quiz-preview");
+      if (quizPreviewElem) {
+        quizPreviewElem.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 200);
   };
 
   // 'Export as PDF' (prints preview as PDF)
@@ -406,6 +419,7 @@ function App() {
             {/* Quiz Preview */}
             {showPreview && (
               <div
+                id="quiz-preview"
                 style={{
                   margin: "32px 0 18px",
                   background: "#fcfcff",
